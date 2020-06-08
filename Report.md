@@ -117,23 +117,24 @@ Relevant files include:
       - Allows to store a step taken by the agent (state, action, reward, next_state, done) in the Replay Buffer/Memory
 	  - Every 20 steps, updates the Actor's and Critic's *target* network weights with the current weight values from the respective *local* network, 10 times.
     - act function: returns the actions for the given state given under by the current policy. Action selection is done by using the output of the Actor *local* Network, given the current observed state with a decayed noise sample from the Ornstein-Uhlenbeck process.
-    - learn function: First, the Critic's *local* network parameters are updated using a given batch of experiences from the replay buffer. This is accomplished by computing Q-values from the Critic's *target* network and the Q-values from the Critic's *local*
-    - soft_update function is called by learn() to update the *target* neural network parameters from the *local* network weights
+    - learn function: First, the Critic's *local* network parameters are updated using a given batch of experiences from the replay buffer. This is accomplished by computing Q-values from the Critic's *target* network and the Q-values from the Critic's *local* network. The mean square error between between these Q-values are the critic loss. Next, the Actor *local* network parameters are updated using the negative of the mean of the output of the Critic *local* network, given observed states and the actions predicted by the Actor *local* network. 
+    - soft_update function is called by learn() to update the *target* neural network parameters with a weighted combination of the *local* network weights and *target* network weights.
   - The ReplayBuffer class implements a fixed-size buffer to store experience tuples  (state, action, reward, next_state, done) 
     - add function adds an experience step to the memory
     - sample function randomly samples a batch of experience steps for the learning       
 
 
-### DQN Parameters Values, Model Architecture and Results
+### DDPG Parameters Values, Model Architectures and Results
 
-The DQN agent uses the following parameters values (defined in dqn_agent.py):
+The DDPG agent uses the following parameters values (defined in ddpg_agent.py):
 
 ```
-BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 64         # minibatch size 
-GAMMA = 0.99            # discount factor 
+BUFFER_SIZE = int(1e6)  # replay buffer size
+BATCH_SIZE = 1024       # minibatch size 
+GAMMA = 0.85            # discount factor 
 TAU = 1e-3              # for soft update of target parameters
-LR = 5e-4               # learning rate 
+LR_ACTOR = 5e-4         # learning rate 
+LR_CRITIC = 1e-3		# 
 UPDATE_EVERY = 4        # how often to update the network
 ```
 
