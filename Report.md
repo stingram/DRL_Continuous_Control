@@ -60,7 +60,7 @@ This project implements a *Policy Based* method called Deep Determininistic Poli
 Deep Determininistic Policy Gradient leverages a number techniques:
 - A Reinforcement Learning method for continuous-action spaces
 - Q-table approximation (action-values) using a Deep Neural Network (the Actor)
-- An action estimation (action to take) using a Deep Neural Network (the Critic
+- An action estimation (action to take) using a Deep Neural Network (the Critic)
 
 This implementation includes other training improvements: 
 - Experience Replay
