@@ -72,7 +72,7 @@ This implementation includes other training improvements:
 
 ![Deep Deterministic Policy Gradient algorithm from "Continuous control with deep reinforcement learning"](images/ddpg_00.PNG)
 
-This algorithm is taken from the [ontinuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971).
+This algorithm is taken from the [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971).
 
 
 ### Code implementation
