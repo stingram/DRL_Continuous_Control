@@ -48,23 +48,20 @@ The observation space consists of 33 variables corresponding to position, rotati
     - Recommended Maximum: 3
 - Benchmark Mean Reward: 30
 
-
-
-The task is episodic, and **in order to solve the environment, the average score of the 20 agents must get achieve an average score of +30 over 100 consecutive episodes.**
-
+The task is episodic, and **in order to solve the environment, the average score of the 20 agents must achieve an average score of +30 over 100 consecutive episodes.**
 
 ## Agent Implementation
 
 ### DDPG 
 
-This project implements a *Policy Based* method called Deep Determininistic Policy Gradient [DDPG](https://https://arxiv.org/abs/1509.02971). 
+This project implements a *Policy Based* method called Deep Determininistic Policy Gradient [DDPG](https://arxiv.org/abs/1509.02971). 
 
-Deep Determininistic Policy Gradient leverages XYZ techniques:
-- A Reinforcement Learning method called [Q Learning](https://en.wikipedia.org/wiki/Q-learning)
-- Q-table approximation (action-values) using a Deep Neural Network
-- An action estimation (action to take) using a Deep Neural Network
+Deep Determininistic Policy Gradient leverages a number techniques:
+- A Reinforcement Learning method for continuous-action spaces
+- Q-table approximation (action-values) using a Deep Neural Network (the Actor)
+- An action estimation (action to take) using a Deep Neural Network (the Critic
 
-This implementation includes two training improvements described in their [Nature publication : "Human-level control through deep reinforcement learning (2015)"](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf).
+This implementation includes other training improvements: 
 - Experience Replay
 - Fixed Q Targets
 - Soft Updates
@@ -74,9 +71,9 @@ This implementation includes two training improvements described in their [Natur
 
 ### Algorithm
 
-![Deep Q-Learning algorithm from Udacity](images/dqn_algorithm.PNG)
+![Deep Deterministic Policy Gradient algorithm from "Continuous control with deep reinforcement learning"](images/ddpg_00.PNG)
 
-This algorithm screenshot is taken from the [Deep Reinforcement Learning Nanodegree course](https://www.udacity.com/course/deep-reinforcement-learning-nanodegree--nd893).
+This algorithm is taken from the [ontinuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971).
 
 
 ### Code implementation
@@ -129,22 +126,33 @@ Relevant files include:
 The DDPG agent uses the following parameters values (defined in ddpg_agent.py):
 
 ```
-BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 1024       # minibatch size 
-GAMMA = 0.85            # discount factor 
-TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 5e-4         # learning rate 
-LR_CRITIC = 1e-3		# 
-UPDATE_EVERY = 4        # how often to update the network
+BUFFER_SIZE = int(1e6)  # Replay buffer size
+BATCH_SIZE = 1024       # Minibatch size 
+GAMMA = 0.85            # Discount factor 
+TAU = 1e-3              # For soft update of target parameters
+LR_ACTOR = 1e-4         # Learning rate for actor network
+LR_CRITIC = 1e-3		# Learning rate for the critic network
+WEIGHT_DECAY = 0		# L2 Regularization
+UPDATE EVERY = 20		# How often to update the network
+UPDATE_TIMES = 10       # How many times to update the network
+NOISE_DECAY  = 0.999    # Noise decay factor
 ```
 
-The Neural Networks use the following architecture:
+The Actor Neural Networks use the following architecture:
 
 ```
-Input nodes (37) -> Fully Connected Layer (128 nodes, Relu activation) -> Fully Connected Layer (64 nodes, Relu activation) -> Ouput nodes (4)
+Input nodes (33) -> Fully Connected Layer (256 nodes, Relu activation) -> Fully Connected Layer (128 nodes, Relu activation) -> Ouput nodes (1)
 ```
 
-The networks use Adam optimization with a learning rate of LR=5e-4 and are trained using a BATCH_SIZE=64.
+The Actor networks use Adam optimization with a learning rate of LR=1e-4 and are trained using a BATCH_SIZE=1024.
+
+The Critic Neural Networks use the following architecture:
+
+```
+Input nodes (33) -> Fully Connected Layer (128 nodes, Relu activation) -> Fully Connected Layer (64 nodes, Relu activation) -> Ouput nodes (1)
+```
+
+The networks use Adam optimization with a learning rate of LR=1e-3 and are trained using a BATCH_SIZE=1024.
 
 With the given architecture and parameters, the training logs and results are shown below:
 
@@ -152,7 +160,7 @@ With the given architecture and parameters, the training logs and results are sh
 
 ![Score evolution during the training](images/scores.PNG)
 
-**These results meets the project's expectation as the agent is able to receive an average reward (over 100 episodes) of at least +13, and in fewer than 500 episodes** (For context, Udacity's agent solved the project in fewer than 1800 episodes)
+**These results meets the project's expectation as the agents are able to receive an average reward (over 100 episodes) of at least +30.0, and in fewer than 150 episodes. The problem was considered solved after Episode 6.**
 
 ### Ideas for Future Work
 
@@ -162,12 +170,7 @@ Further augmentations could also be implemented to increase the performance of t
 - [Double DQN](https://arxiv.org/abs/1509.06461)
 > ABSTRACT: The popular Q-learning algorithm is known to overestimate action values under certain conditions. It was not previously known whether, in practice, such overestimations are common, whether they harm performance, and whether they can generally be prevented. In this paper, we answer all these questions affirmatively. In particular, we first show that the recent DQN algorithm, which combines Q-learning with a deep neural network, suffers from substantial overestimations in some games in the Atari 2600 domain. We then show that the idea behind the Double Q-learning algorithm, which was introduced in a tabular setting, can be generalized to work with large-scale function approximation. We propose a specific adaptation to the DQN algorithm and show that the resulting algorithm not only reduces the observed overestimations, as hypothesized, but that this also leads to much better performance on several games.
 
-- [Prioritized experience replay](https://arxiv.org/abs/1511.05952)
-> ABSTRACT: Experience replay lets online reinforcement learning agents remember and reuse experiences from the past. In prior work, experience transitions were uniformly sampled from a replay memory. However, this approach simply replays transitions at the same frequency that they were originally experienced, regardless of their significance. In this paper we develop a framework for prioritizing experience, so as to replay important transitions more frequently, and therefore learn more efficiently. We use prioritized experience replay in Deep Q-Networks (DQN), a reinforcement learning algorithm that achieved human-level performance across many Atari games. DQN with prioritized experience replay achieves a new state-of-the-art, outperforming DQN with uniform replay on 41 out of 49 games.
-
-- [Dueling DQN](https://arxiv.org/abs/1511.06581)
-> ABSTRACT: In recent years there have been many successes of using deep representations in reinforcement learning. Still, many of these applications use conventional architectures, such as convolutional networks, LSTMs, or auto-encoders. In this paper, we present a new neural network architecture for model-free reinforcement learning. Our dueling network represents two separate estimators: one for the state value function and one for the state-dependent action advantage function. The main benefit of this factoring is to generalize learning across actions without imposing any change to the underlying reinforcement learning algorithm. Our results show that this architecture leads to better policy evaluation in the presence of many similar-valued actions. Moreover, the dueling architecture enables our RL agent to outperform the state-of-the-art on the Atari 2600 domain.
 
 ### Training Hardware Configuration 
 
-This agent has been trained on the Udacity provided online workspace. This environment provides an Nvidia K80 GPU for training. The Unity environment without visualization was used during training.
+The agents were trained on an Nvidia Titan X 12GB GPU. The Unity environment without visualization was used during training.
