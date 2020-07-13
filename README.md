@@ -10,7 +10,7 @@
 
 In this project, using a Deep Deterministic Policy Gradient (DDPG) method, I trained an agent (double-jointed arm) to move to target locations. The agent is able to maintain its position at the target location for as many time steps as possible. With DDPG, which is a reinforcement learning method for continuous-action spaces, I implemented Q-table approximation (action-values) using a Deep Neural Network (the Actor) and an action estimation (action to take) using a Deep Neural Network (the Critic). Other training improvements include: Experience Replay, Fixed Q Targets, Soft Updates and an Ornstein-Unlenbeck Process. The agent was able to reach an average score of +30 over 100 consecutive episodes by episode 106.
 
-Please see my final Project Report [here](Report.md).
+Please see my Project Report [here](Report.md).
 
 ### Introduction
 
